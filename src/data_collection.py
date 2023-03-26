@@ -9,7 +9,7 @@ import log
 
 LOG = log.get_logger(__name__)
 
-headers = {"Authorization": "Bearer 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"}
+headers = {"Authorization": "Bearer <token>"}
 aclient = AsyncClient(headers=headers)
 
 STORAGE = []

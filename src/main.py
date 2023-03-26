@@ -2,6 +2,7 @@ from fastapi import FastAPI, WebSocket
 from fastapi.responses import HTMLResponse
 from data_collection import populate_commits_table, populate_repositories_table
 import asyncpg
+import asyncio
 
 import log
 
@@ -55,8 +56,7 @@ async def websocket_endpoint(websocket: WebSocket):
     while True:
         keyword = await websocket.receive_text()
         LOG.info(f"Got new keyword: {keyword}")
-        await populate_repositories_table(keyword)
-        await populate_commits_table(keyword)
+        await asyncio.gather(populate_repositories_table(keyword), populate_commits_table(keyword))
         new_reps_query = """
             SELECT r.repo_name FROM repositories r
             WHERE r.keyword = $1

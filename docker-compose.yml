@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:13.4-alpine
+    restart: "no"
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    env_file:
+      - .postgres.env
+    ports:
+      - "5432:5432"
+
+  livetracker:
+    container_name: livetracker
+    build: .
+    restart: "no"
+    command: bash -c "uvicorn main:app --loop uvloop --no-access-log --host 0.0.0.0 --port 80 --reload"
+    volumes:
+      - ./src/:/app/
+    ports:
+      - "8000:80"
+    depends_on:
+      - postgres
+
+
+volumes:
+  postgres:
